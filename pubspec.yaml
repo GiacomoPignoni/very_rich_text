@@ -1,0 +1,17 @@
+name: very_rich_text
+description: A Flutter widget to make RichText Widget more useful
+version: 0.1
+author: Giacomo Pignoni
+homepage: https://github.com/GiacomoPignoni/very_rich_text
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
