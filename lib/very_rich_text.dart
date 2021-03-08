@@ -8,19 +8,17 @@ const hexCodeRegex = r"#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})";
 
 class VeryRichTextWidget extends StatelessWidget {
 
-  final String text;
-  final TextStyle baseStyle;
+  late final String text;
+  final TextStyle? baseStyle;
   final List<RichTextVar> variables;
-  RegExp variablesRegex;
+  late final RegExp variablesRegex;
 
-  VeryRichTextWidget(this.text, { this.baseStyle, this.variables }) {
-    if(this.variables != null) {
-      String str = r"";
-      this.variables.forEach((v) {
-        str += "^${v.name}|";
-      });
-      this.variablesRegex = RegExp(str);
-    }
+  VeryRichTextWidget(this.text, { this.baseStyle, this.variables = const[] }) {
+    String str = r"";
+    this.variables.forEach((v) {
+      str += "^${v.name}|";
+    });
+    this.variablesRegex = RegExp(str);
   }
 
   @override
@@ -54,20 +52,23 @@ class VeryRichTextWidget extends StatelessWidget {
     return spans;
   }
 
-  TextStyle _findStyle(DataWrapper str) {
+  TextStyle? _findStyle(DataWrapper str) {
     // Search for variables
     var match = this.variablesRegex.firstMatch(str.value);
-    if(match?.group(0)?.isNotEmpty ?? false) {
-      final v = this.variables.firstWhere((x) => x.name == match.group(0));
+    if(match != null) {
+      final v = this.variables.firstWhere((x) => x.name == match?.group(0));
       str.value = str.value.substring(match.end + 1);
       return v.style;
     }
 
     // Check for hex code
     match = RegExp(hexCodeRegex).firstMatch(str.value);
-    if(match?.group(0)?.isNotEmpty ?? false) {
-      str.value = str.value.substring(match.end);
-      return TextStyle(color: HexColor.fromHex(match.group(0)));
+    if(match != null) {
+      String hexCodeStr = match.group(0) ?? "";
+      if(hexCodeStr.isNotEmpty) {
+        str.value = str.value.substring(match.end);
+        return TextStyle(color: HexColor.fromHex(hexCodeStr));
+      }
     }
 
     return null;
