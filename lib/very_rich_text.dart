@@ -56,9 +56,12 @@ class VeryRichTextWidget extends StatelessWidget {
     // Search for variables
     var match = this.variablesRegex.firstMatch(str.value);
     if(match != null) {
-      final v = this.variables.firstWhere((x) => x.name == match?.group(0));
-      str.value = str.value.substring(match.end + 1);
-      return v.style;
+      String varStr = match.group(0) ?? "";
+      if(varStr.isNotEmpty) {
+        final v = this.variables.firstWhere((x) => x.name == match?.group(0));
+        str.value = str.value.substring(match.end + 1);
+        return v.style;
+      }
     }
 
     // Check for hex code
